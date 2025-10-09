@@ -62,7 +62,7 @@ if (!isset($user['level']) || $user['level'] !== 'admin') {
             <?php endif; ?>
 
             <!-- Statistik Card -->
-            <section class="grid grid-cols-1 md:grid-cols-3 gap-8 mb-10">
+            <section class="grid grid-cols-1 md:grid-cols-5 gap-8 mb-10">
                 <div class="bg-white rounded-2xl shadow-lg p-6 flex flex-col items-center justify-center border border-indigo-100">
                     <span class="inline-flex items-center justify-center w-12 h-12 rounded-full bg-gradient-to-tr from-indigo-400 to-purple-400 shadow">
                         <svg class="w-7 h-7 text-white" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M3 7v4a1 1 0 001 1h3m10-5v4a1 1 0 01-1 1h-3m-4 4h4"/></svg>
@@ -103,6 +103,24 @@ if (!isset($user['level']) || $user['level'] !== 'admin') {
                     <div class="mt-3 text-lg font-bold text-pink-700">Total User</div>
                     <div class="text-2xl font-extrabold text-pink-900">
                         <?php $userCount = mysqli_query($koneksi, "SELECT COUNT(*) as total FROM user"); $userTotal = mysqli_fetch_assoc($userCount); echo $userTotal['total'] ?? 0; ?>
+                    </div>
+                </div>
+                <div class="bg-white rounded-2xl shadow-lg p-6 flex flex-col items-center justify-center border border-indigo-100">
+                    <span class="inline-flex items-center justify-center w-12 h-12 rounded-full bg-gradient-to-tr from-pink-500 to-pink-700 shadow">
+                        <svg class="w-7 h-7 text-white" fill="currentColor" viewBox="0 0 20 20"><path d="M4 3a2 2 0 00-2 2v10a2 2 0 002 2h12a2 2 0 002-2V5a2 2 0 00-2-2H4zm0 2h12v10H4V5z"/></svg>
+                    </span>
+                    <div class="mt-3 text-lg font-bold text-pink-700">Total Manga</div>
+                    <div class="text-2xl font-extrabold text-pink-900">
+                        <?php $mangaCount = mysqli_query($koneksi, "SELECT COUNT(*) as total FROM manga"); $mangaTotal = mysqli_fetch_assoc($mangaCount); echo $mangaTotal['total'] ?? 0; ?>
+                    </div>
+                </div>
+                <div class="bg-white rounded-2xl shadow-lg p-6 flex flex-col items-center justify-center border border-indigo-100">
+                    <span class="inline-flex items-center justify-center w-12 h-12 rounded-full bg-gradient-to-tr from-green-400 to-green-600 shadow">
+                        <svg class="w-7 h-7 text-white" fill="currentColor" viewBox="0 0 20 20"><path d="M2 5a2 2 0 012-2h12a2 2 0 012 2v10a2 2 0 01-2 2H4a2 2 0 01-2-2V5z"/></svg>
+                    </span>
+                    <div class="mt-3 text-lg font-bold text-green-700">Total Novel</div>
+                    <div class="text-2xl font-extrabold text-green-900">
+                        <?php $novelCount = mysqli_query($koneksi, "SELECT COUNT(*) as total FROM novel"); $novelTotal = mysqli_fetch_assoc($novelCount); echo $novelTotal['total'] ?? 0; ?>
                     </div>
                 </div>
             </section>
@@ -149,116 +167,145 @@ if (!isset($user['level']) || $user['level'] !== 'admin') {
                   document.getElementById('type-title').textContent = types[currentType].label;
                 });
                 </script>
-                <div class="overflow-x-auto rounded-lg shadow bg-gradient-to-br from-indigo-50 to-white p-4">
-                    <table class="min-w-full bg-white rounded-xl overflow-hidden">
-                        <thead class="bg-indigo-700">
-                            <tr>
-                                <th class="py-3 px-6 text-center text-xs font-bold text-white uppercase tracking-wider">Image</th>
-                                <th class="py-3 px-6 text-center text-xs font-bold text-white uppercase tracking-wider">Judul Anime</th>
-                                <th class="py-3 px-6 text-center text-xs font-bold text-white uppercase tracking-wider">Rating</th>
-                                <th class="py-3 px-6 text-center text-xs font-bold text-white uppercase tracking-wider">Jumlah Episode</th>
-                            </tr>
-                        </thead>
-                        <tbody class="divide-y divide-indigo-100">
-                        <?php
-                            $tipe = isset($_GET['tipe']) ? $_GET['tipe'] : 'anime';
-                            $where = '';
-                            $table = 'anime';
-                            $judulField = 'judul_anime';
-                            $imageField = 'image';
+                <div class="overflow-hidden rounded-lg p-2">
+                    <?php
+                        $tipe = isset($_GET['tipe']) ? $_GET['tipe'] : 'anime';
+                        $where = '';
+                        $table = 'anime';
+                        $judulField = 'judul_anime';
+                        $imageField = 'image';
+                        $ratingField = 'rating';
+                        $idField = 'id_anime';
+                        if ($tipe === 'manga') {
+                            $table = 'manga';
+                            $judulField = 'judul_manga';
+                            $imageField = 'cover';
                             $ratingField = 'rating';
-                            $idField = 'id_anime';
-                            if ($tipe === 'manga') {
-                                $table = 'manga';
-                                $judulField = 'judul_manga';
-                                $imageField = 'cover';
-                                $ratingField = 'rating';
-                                $idField = 'id_manga';
-                            } else if ($tipe === 'novel') {
-                                $table = 'novel';
-                                $judulField = 'judul_novel';
-                                $imageField = 'cover';
-                                $ratingField = 'rating';
-                                $idField = 'id_novel';
-                            }
-                            if (isset($_GET['search']) && $_GET['search'] !== '') {
-                                $search = mysqli_real_escape_string($koneksi, $_GET['search']);
-                                $where = "WHERE $judulField LIKE '%$search%'";
-                            }
-                            $query = "SELECT * FROM $table $where ORDER BY $idField DESC";
-                            $dataQ = mysqli_query($koneksi, $query);
-                            if (!$dataQ) {
-                                echo '<tr><td colspan="2" class="text-red-600 py-4 px-6">Query error: ' . mysqli_error($koneksi) . '</td></tr>';
-                            } else {
-                                while ($row = mysqli_fetch_assoc($dataQ)):
-                        ?>
-                            <tr class="hover:bg-indigo-50 transition-all">
-                                <td class="py-4 px-6 text-center">
+                            $idField = 'id_manga';
+                        } else if ($tipe === 'novel') {
+                            $table = 'novel';
+                            $judulField = 'judul_novel';
+                            $imageField = 'cover';
+                            $ratingField = 'rating';
+                            $idField = 'id_novel';
+                        }
+                        if (isset($_GET['search']) && $_GET['search'] !== '') {
+                            $search = mysqli_real_escape_string($koneksi, $_GET['search']);
+                            $where = "WHERE $judulField LIKE '%$search%'";
+                        }
+                        $query = "SELECT * FROM $table $where ORDER BY $idField DESC";
+                        $dataQ = mysqli_query($koneksi, $query);
+                        if (!$dataQ) {
+                            echo '<div class="text-red-600 p-4">Query error: ' . mysqli_error($koneksi) . '</div>';
+                        } else {
+                    ?>
+                    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+                        <?php while ($row = mysqli_fetch_assoc($dataQ)): ?>
+                            <div class="bg-white rounded-2xl shadow p-4 flex flex-col">
+                                <div class="mx-auto rounded-lg overflow-hidden bg-gray-100 flex items-center justify-center mb-4 w-28 sm:w-32 md:w-36 lg:w-40" style="aspect-ratio:9/10;">
                                     <?php if (!empty($row[$imageField])): ?>
-                                        <div class="w-[80px] h-[120px] rounded border border-indigo-200 shadow-sm overflow-hidden bg-white mx-auto flex items-center justify-center">
-                                            <img src="../image/<?php echo htmlspecialchars($row[$imageField]); ?>" class="w-full h-full object-cover transition-transform duration-200 hover:scale-105" />
-                                        </div>
+                                        <img src="../image/<?php echo htmlspecialchars($row[$imageField]); ?>" class="w-full h-full object-cover" alt="cover">
                                     <?php else: ?>
-                                        <div class="w-[80px] h-[120px] rounded border-2 border-dashed border-gray-300 bg-gray-100 flex items-center justify-center text-gray-400 italic mx-auto text-xs">
-                                            No image
-                                        </div>
+                                        <div class="text-sm text-gray-400 italic">No image</div>
                                     <?php endif; ?>
-                                </td>
-                                <td class="py-4 px-6 text-center text-gray-800 font-semibold align-middle text-lg">
-                                    <?php if ($tipe === 'anime'): ?>
-                                        <a href="update.php?id=<?php echo (int)$row['id_anime']; ?>" class="hover:underline hover:text-indigo-600 transition-all"><?php echo htmlspecialchars($row['judul_anime']); ?></a>
-                                    <?php elseif ($tipe === 'manga'): ?>
-                                        <a href="update_manga.php?tipe=manga&id=<?php echo (int)$row['id_manga']; ?>" class="hover:underline hover:text-pink-600 transition-all"><?php echo htmlspecialchars($row['judul_manga']); ?></a>
-                                    <?php else: ?>
-                                        <span><?php echo htmlspecialchars($row[$judulField]); ?></span>
-                                    <?php endif; ?>
-                                </td>
-                                <td class="py-4 px-6 text-center align-middle">
-                                    <span class="inline-flex items-center justify-center">
-                                        <svg class="w-5 h-5 text-yellow-500 mr-1" fill="currentColor" viewBox="0 0 20 20"><path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.286 3.967a1 1 0 00.95.69h4.175c.969 0 1.371 1.24.588 1.81l-3.38 2.455a1 1 0 00-.364 1.118l1.287 3.966c.3.922-.755 1.688-1.54 1.118l-3.38-2.454a1 1 0 00-1.175 0l-3.38 2.454c-.784.57-1.838-.196-1.54-1.118l1.287-3.966a1 1 0 00-.364-1.118L2.05 9.394c-.783-.57-.38-1.81.588-1.81h4.175a1 1 0 00.95-.69l1.286-3.967z"/></svg>
-                                        <span class="text-gray-700 font-medium text-lg"><?php echo htmlspecialchars($row[$ratingField] ?? '-'); ?></span>
-                                    </span>
-                                </td>
-                                <td class="py-4 px-6 text-center align-middle">
-                                    <?php if ($tipe === 'anime'): ?>
+                                </div>
+                                <div class="flex-1">
+                                    <h3 class="text-lg font-bold text-gray-800 mb-2 truncate">
+                                        <?php if ($tipe === 'anime'): ?>
+                                            <a href="update.php?id=<?php echo (int)$row['id_anime']; ?>" class="hover:underline hover:text-indigo-600 transition-all"><?php echo htmlspecialchars($row['judul_anime']); ?></a>
+                                        <?php elseif ($tipe === 'manga'): ?>
+                                            <a href="update.php?tipe=manga&id=<?php echo (int)$row['id_manga']; ?>" class="hover:underline hover:text-pink-600 transition-all"><?php echo htmlspecialchars($row['judul_manga']); ?></a>
+                                        <?php elseif ($tipe === 'novel'): ?>
+                                            <a href="update.php?tipe=novel&id=<?php echo (int)$row['id_novel']; ?>" class="hover:underline hover:text-green-600 transition-all"><?php echo htmlspecialchars($row['judul_novel']); ?></a>
+                                        <?php else: ?>
+                                            <span><?php echo htmlspecialchars($row[$judulField]); ?></span>
+                                        <?php endif; ?>
+                                    </h3>
+                                    <p class="text-sm text-gray-600 mb-3 truncate"><?php echo htmlspecialchars(substr($row['synopsis'] ?? $row['synopsis_manga'] ?? $row['synopsis_novel'] ?? '', 0, 140)); ?><?php echo (strlen($row['synopsis'] ?? $row['synopsis_manga'] ?? $row['synopsis_novel'] ?? '') > 140) ? '...' : ''; ?></p>
+                                </div>
+                                <div class="mt-3 flex items-center justify-between">
+                                    <div class="inline-flex items-center gap-2">
+                                        <span class="inline-flex items-center px-3 py-1 rounded-full bg-yellow-100 text-yellow-800 text-sm font-semibold">
+                                            <svg class="w-4 h-4 mr-1" fill="currentColor" viewBox="0 0 20 20"><path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.286 3.967a1 1 0 00.95.69h4.175c.969 0 1.371 1.24.588 1.81l-3.38 2.455a1 1 0 00-.364 1.118l1.287 3.966c.3.922-.755 1.688-1.54 1.118l-3.38-2.454a1 1 0 00-1.175 0l-3.38 2.454c-.784.57-1.838-.196-1.54-1.118l1.287-3.966a1 1 0 00-.364-1.118L2.05 9.394c-.783-.57-.38-1.81.588-1.81h4.175a1 1 0 00.95-.69l1.286-3.967z"/></svg>
+                                            <span><?php echo htmlspecialchars($row[$ratingField] ?? '-'); ?></span>
+                                        </span>
+                                    </div>
+                                    <div class="text-sm text-gray-600">
                                         <?php
-                                            $folder = '../video/' . $row[$judulField];
-                                            $episode_count = 0;
-                                            if (is_dir($folder)) {
-                                                $files = scandir($folder);
-                                                foreach ($files as $file) {
-                                                    if (preg_match('/\.(mp4|mkv|avi|mov|flv|webm)$/i', $file)) {
-                                                        $episode_count++;
-                                                    }
-                                                }
-                                            }
-                                            echo $episode_count . ' Episode';
-                                        ?>
-                                    <?php elseif ($tipe === 'manga'): ?>
-                                        <?php
-                                            $volumeDir = '../manga/';
-                                            $volumeCount = 0;
-                                            if (is_dir($volumeDir)) {
-                                                $files = scandir($volumeDir);
-                                                foreach ($files as $file) {
-                                                    if (preg_match('/\\.(pdf|zip)$/i', $file)) {
-                                                        if (strpos($file, (string)$row['id_manga']) !== false || stripos($file, str_replace(' ', '', $row['judul_manga'])) !== false) {
-                                                            $volumeCount++;
+                                            if ($tipe === 'anime') {
+                                                $folder = '../video/' . $row[$judulField];
+                                                $episode_count = 0;
+                                                if (is_dir($folder)) {
+                                                    $files = scandir($folder);
+                                                    foreach ($files as $file) {
+                                                        if (preg_match('/\.(mp4|mkv|avi|mov|flv|webm)$/i', $file)) {
+                                                            $episode_count++;
                                                         }
                                                     }
                                                 }
+                                                echo $episode_count . ' Episode';
+                                            } elseif ($tipe === 'manga') {
+                                                $safeTitle = preg_replace('/[^a-zA-Z0-9_-]/', '_', trim($row['judul_manga']));
+                                                $perFolder = '../manga/' . ($safeTitle ?: 'untitled') . '/';
+                                                $volumeCount = 0;
+                                                if (is_dir($perFolder)) {
+                                                    $files = scandir($perFolder);
+                                                    foreach ($files as $file) {
+                                                        if (preg_match('/\.(pdf|zip)$/i', $file)) {
+                                                            $volumeCount++;
+                                                        }
+                                                    }
+                                                } else {
+                                                    $volumeDir = '../manga/';
+                                                    if (is_dir($volumeDir)) {
+                                                        $files = scandir($volumeDir);
+                                                        foreach ($files as $file) {
+                                                            if (preg_match('/\.(pdf|zip)$/i', $file)) {
+                                                                if (strpos($file, (string)$row['id_manga']) !== false || stripos($file, str_replace(' ', '', $row['judul_manga'])) !== false) {
+                                                                    $volumeCount++;
+                                                                }
+                                                            }
+                                                        }
+                                                    }
+                                                }
+                                                echo $volumeCount . ' Chapter';
+                                            } elseif ($tipe === 'novel') {
+                                                $safeTitleN = preg_replace('/[^a-zA-Z0-9_-]/', '_', trim($row['judul_novel'] ?? ''));
+                                                $novelFolder = '../novel/' . ($safeTitleN ?: 'untitled') . '/';
+                                                $volumeCount = 0;
+                                                if (is_dir($novelFolder)) {
+                                                    $filesN = scandir($novelFolder);
+                                                    foreach ($filesN as $f) {
+                                                        if (preg_match('/\.(pdf|zip)$/i', $f)) {
+                                                            $volumeCount++;
+                                                        }
+                                                    }
+                                                } else {
+                                                    $volumeDirN = '../novel/';
+                                                    if (is_dir($volumeDirN)) {
+                                                        $filesN = scandir($volumeDirN);
+                                                        foreach ($filesN as $f) {
+                                                            if (preg_match('/\.(pdf|zip)$/i', $f)) {
+                                                                if (strpos($f, (string)($row['id_novel'] ?? '')) !== false || stripos($f, str_replace(' ', '', ($row['judul_novel'] ?? ''))) !== false) {
+                                                                    $volumeCount++;
+                                                                }
+                                                            }
+                                                        }
+                                                    }
+                                                }
+                                                echo $volumeCount > 0 ? ($volumeCount . ' Volume') : '-';
                                             }
-                                            echo $volumeCount . ' Chapter';
                                         ?>
-                                    <?php elseif ($tipe === 'novel'): ?>
-                                        <?php echo isset($row['file']) ? 'File: ' . htmlspecialchars($row['file']) : '-'; ?>
-                                    <?php endif; ?>
-                                </td>
-                            </tr>
-                        <?php endwhile; }
-                        ?>
-                        </tbody>
-                    </table>
+                                    </div>
+                                </div>
+                                <div class="mt-4 flex items-center gap-3">
+                                    <a href="<?php echo ($tipe === 'anime') ? 'update.php?id=' . (int)$row['id_anime'] : 'update.php?tipe=' . $tipe . '&id=' . (int)$row[$idField]; ?>" class="flex-1 text-center py-2 rounded-lg bg-indigo-600 text-white font-semibold hover:bg-indigo-700 transition">Edit</a>
+                                    <a href="" onclick="alert('Gunakan halaman edit untuk menghapus'); return false;" class="py-2 px-3 rounded-lg bg-red-100 text-red-700 text-sm">Delete</a>
+                                </div>
+                            </div>
+                        <?php endwhile; ?>
+                    </div>
+                    <?php } ?>
                 </div>
             </section>
         </main>

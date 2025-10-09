@@ -52,19 +52,22 @@ $role = isset($user['role']) ? $user['role'] : 'user';
         if ($animeQ):
           while ($anime = mysqli_fetch_assoc($animeQ)):
         ?>
-          <a href="streaming.php?id=<?php echo $anime['id_anime']; ?>" class="anime-card bg-white/95 rounded-3xl shadow-xl overflow-hidden flex flex-col items-center hover:scale-[1.04] hover:shadow-2xl border border-indigo-200 transition-all duration-300 group focus:ring-4 focus:ring-indigo-200 outline-none">
-            <div class="w-full h-64 bg-gradient-to-tr from-indigo-100 via-white to-purple-100 flex items-center justify-center overflow-hidden relative">
+          <div class="anime-card bg-white/95 rounded-3xl shadow-xl overflow-hidden flex flex-col items-center hover:scale-[1.02] hover:shadow-xl border border-indigo-200 transition-all duration-300 group focus:ring-4 focus:ring-indigo-200 outline-none">
+            <div class="w-full h-40 bg-gradient-to-tr from-indigo-100 via-white to-purple-100 flex items-center justify-center overflow-hidden relative">
               <img src="../image/<?php echo htmlspecialchars($anime['image']); ?>" alt="<?php echo htmlspecialchars($anime['judul_anime']); ?>" class="w-full h-full object-cover object-center transition-all duration-300 group-hover:scale-105">
-              <span class="absolute top-3 right-3 bg-white/80 px-3 py-1 rounded-full text-xs font-bold text-purple-600 shadow">Rating: <?php echo htmlspecialchars($anime['rating']); ?></span>
+              <span class="absolute top-2 right-2 bg-white/80 px-2 py-0.5 rounded-full text-xs font-bold text-purple-600 shadow">Rating: <?php echo htmlspecialchars($anime['rating']); ?></span>
             </div>
-            <div class="p-5 w-full flex-1 flex flex-col justify-between">
-              <h3 class="text-xl font-extrabold text-indigo-700 mb-2 text-center line-clamp-2 group-hover:text-purple-600 transition-all"><?php echo htmlspecialchars($anime['judul_anime']); ?></h3>
-              <div class="flex flex-wrap justify-center gap-2 mb-2">
-                <span class="inline-block px-3 py-1 rounded-full bg-indigo-100 text-indigo-600 text-xs font-semibold">Genre: <?php echo htmlspecialchars($anime['genre']); ?></span>
+            <div class="p-4 w-full flex-1 flex flex-col justify-between">
+              <h3 class="text-lg font-extrabold text-indigo-700 mb-1 text-center truncate group-hover:text-purple-600 transition-all"><?php echo htmlspecialchars($anime['judul_anime']); ?></h3>
+              <div class="flex flex-wrap justify-center gap-2 mb-1">
+                <span class="inline-block px-2 py-0.5 rounded-full bg-indigo-100 text-indigo-600 text-xs font-semibold">Genre: <?php echo htmlspecialchars($anime['genre']); ?></span>
               </div>
-              <div class="text-gray-500 text-sm text-center line-clamp-3 mb-2"><?php echo htmlspecialchars($anime['synopsis']); ?></div>
+              <div class="text-gray-500 text-sm text-center truncate mb-3"><?php echo htmlspecialchars($anime['synopsis']); ?></div>
+              <div class="mt-2 flex items-center justify-center">
+                <a href="streaming.php?id=<?php echo $anime['id_anime']; ?>" class="px-4 py-2 rounded-lg bg-indigo-600 text-white text-sm font-semibold hover:bg-indigo-700 transition">Menonton</a>
+              </div>
             </div>
-          </a>
+          </div>
         <?php endwhile; ?>
         <?php else: ?>
           <div class="col-span-full text-center text-red-500">Gagal mengambil data anime: <?php echo htmlspecialchars(mysqli_error($koneksi)); ?></div>
@@ -100,19 +103,22 @@ document.getElementById('animeSearch').addEventListener('input', function () {
         if ($mangaQ):
           while ($manga = mysqli_fetch_assoc($mangaQ)):
         ?>
-          <a href="baca_manga.php?id=<?php echo $manga['id_manga']; ?>" class="manga-card bg-white/95 rounded-3xl shadow-xl overflow-hidden flex flex-col items-center hover:scale-[1.04] hover:shadow-2xl border border-purple-200 transition-all duration-300 group focus:ring-4 focus:ring-purple-200 outline-none">
-            <div class="w-full h-64 bg-gradient-to-tr from-purple-100 via-white to-indigo-100 flex items-center justify-center overflow-hidden relative">
+          <div class="manga-card bg-white/95 rounded-3xl shadow-xl overflow-hidden flex flex-col items-center hover:scale-[1.02] hover:shadow-xl border border-purple-200 transition-all duration-300 group focus:ring-4 focus:ring-purple-200 outline-none">
+            <div class="w-full h-40 bg-gradient-to-tr from-purple-100 via-white to-indigo-100 flex items-center justify-center overflow-hidden relative">
               <img src="../image/<?php echo htmlspecialchars($manga['cover']); ?>" alt="<?php echo htmlspecialchars($manga['judul_manga']); ?>" class="w-full h-full object-cover object-center transition-all duration-300 group-hover:scale-105">
-              <span class="absolute top-3 right-3 bg-white/80 px-3 py-1 rounded-full text-xs font-bold text-purple-600 shadow">Rating: <?php echo htmlspecialchars($manga['rating']); ?></span>
+              <span class="absolute top-2 right-2 bg-white/80 px-2 py-0.5 rounded-full text-xs font-bold text-purple-600 shadow">Rating: <?php echo htmlspecialchars($manga['rating']); ?></span>
             </div>
-            <div class="p-5 w-full flex-1 flex flex-col justify-between">
-              <h3 class="text-xl font-extrabold text-purple-700 mb-2 text-center line-clamp-2 group-hover:text-indigo-600 transition-all"><?php echo htmlspecialchars($manga['judul_manga']); ?></h3>
-              <div class="flex flex-wrap justify-center gap-2 mb-2">
-                <span class="inline-block px-3 py-1 rounded-full bg-purple-100 text-purple-600 text-xs font-semibold">Genre: <?php echo htmlspecialchars($manga['genre']); ?></span>
+            <div class="p-4 w-full flex-1 flex flex-col justify-between">
+              <h3 class="text-lg font-extrabold text-purple-700 mb-1 text-center truncate group-hover:text-indigo-600 transition-all"><?php echo htmlspecialchars($manga['judul_manga']); ?></h3>
+              <div class="flex flex-wrap justify-center gap-2 mb-1">
+                <span class="inline-block px-2 py-0.5 rounded-full bg-purple-100 text-purple-600 text-xs font-semibold">Genre: <?php echo htmlspecialchars($manga['genre']); ?></span>
               </div>
-              <div class="text-gray-500 text-sm text-center line-clamp-3 mb-2"><?php echo htmlspecialchars($manga['synopsis']); ?></div>
+              <div class="text-gray-500 text-sm text-center truncate mb-3"><?php echo htmlspecialchars($manga['synopsis']); ?></div>
+              <div class="mt-2 flex items-center justify-center">
+                <a href="baca_manga.php?id=<?php echo $manga['id_manga']; ?>" class="px-4 py-2 rounded-lg bg-purple-600 text-white text-sm font-semibold hover:bg-purple-700 transition">Baca</a>
+              </div>
             </div>
-          </a>
+          </div>
         <?php endwhile; ?>
         <?php else: ?>
           <div class="col-span-full text-center text-red-500">Gagal mengambil data manga: <?php echo htmlspecialchars(mysqli_error($koneksi)); ?></div>

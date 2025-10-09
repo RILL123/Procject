@@ -16,15 +16,29 @@ if (isset($_POST['update_data'])) {
 
 // Update cover
 if (isset($_POST['update_cover']) && isset($_FILES['cover']) && $_FILES['cover']['error'] == 0) {
-    $target = '../image/' . basename($_FILES['cover']['name']);
-    if (move_uploaded_file($_FILES['cover']['tmp_name'], $target)) {
-        $sql = "UPDATE anime SET image='" . mysqli_real_escape_string($koneksi, $_FILES['cover']['name']) . "' WHERE id_anime=$id";
-        mysqli_query($koneksi, $sql);
-        header("Location: ../public/update.php?id=$id&msg=cover_updated");
-        exit;
-    } else {
-        header("Location: ../public/update.php?id=$id&msg=cover_failed");
-        exit;
+    // name the cover based on the anime title
+    $animeQ = mysqli_query($koneksi, "SELECT * FROM anime WHERE id_anime = $id LIMIT 1");
+    $anime = mysqli_fetch_assoc($animeQ);
+    if ($anime) {
+        $orig = basename($_FILES['cover']['name']);
+        $ext = pathinfo($orig, PATHINFO_EXTENSION);
+        $safeTitle = preg_replace('/[^a-zA-Z0-9._-]/', '_', $anime['judul_anime']);
+        $newName = $safeTitle . ($ext ? ('.' . $ext) : '');
+        $target = '../image/' . $newName;
+        if (move_uploaded_file($_FILES['cover']['tmp_name'], $target)) {
+            // delete old cover if exists
+            if (!empty($anime['image'])) {
+                $old = '../image/' . $anime['image'];
+                if (is_file($old)) unlink($old);
+            }
+            $sql = "UPDATE anime SET image='" . mysqli_real_escape_string($koneksi, $newName) . "' WHERE id_anime=$id";
+            mysqli_query($koneksi, $sql);
+            header("Location: ../public/update.php?id=$id&msg=cover_updated");
+            exit;
+        } else {
+            header("Location: ../public/update.php?id=$id&msg=cover_failed");
+            exit;
+        }
     }
 }
 

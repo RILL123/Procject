@@ -10,7 +10,7 @@
             <svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M3 12l2-2m0 0l7-7 7 7M13 5v6h6"/></svg>
             Dashboard
         </a>
-        <a href="upload.php" class="flex items-center gap-2 px-4 py-2 rounded-xl font-semibold text-indigo-700 hover:bg-indigo-100 transition-all duration-200 shadow-sm">
+        <a href="upload.php" class="flex items-center px-4 py-2 bg-indigo-200 text-indigo-900 font-bold rounded shadow hover:bg-indigo-300 transition-all">
             <svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M12 4v16m8-8H4"/></svg>
             Tambah Anime
         </a>
@@ -18,7 +18,7 @@
                         <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M12 4v16m8-8H4"/></svg>
                         Tambah Manga
                     </a>
-        <a href="upload_novel.php" class="flex items-center gap-2 px-4 py-2 rounded-xl font-semibold text-indigo-700 hover:bg-indigo-100 transition-all duration-200 shadow-sm">
+        <a href="upload.php?type=novel" class="flex items-center px-4 py-2 bg-green-200 text-green-900 font-bold rounded shadow hover:bg-green-300 transition-all">
             <svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M12 4v16m8-8H4"/></svg>
             Tambah Novel
         </a>
